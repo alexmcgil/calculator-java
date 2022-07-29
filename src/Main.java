@@ -3,7 +3,7 @@ public class Main {
         calc("1+34");
     }
 
-    public static char calc(String input) {
+    public static int[] separate(String input) {
         input.replaceAll("\\s",""); // Удаляем все пробелы в строке на всякий случай
 
         boolean arab;
@@ -31,7 +31,21 @@ public class Main {
         }
 
         System.out.println(firstNum+operand+lastNum);
-        return input.charAt(0);
+
+        int num1 = Integer.parseInt(firstNum), num2 = Integer.parseInt(lastNum);
+        int[] numbers = new int[num1];
+        try {
+            num1 = Integer.parseInt(firstNum);
+        }
+        catch (NumberFormatException e) {
+            num1 = 0;
+        }
+
+        return numbers;
+
+    }
+    public static String calc(String input) {
+    return "coming soon...";
     }
 
 }
