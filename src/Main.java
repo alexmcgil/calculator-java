@@ -1,51 +1,77 @@
+import ArabToRoman.ArabToArabToRoman;
+import RomanToArab.RomanToArabGenerator;
+
 public class Main {
     public static void main(String[] args) {
-        calc("1+34");
+        var result = calc("V + MMM");
+        System.out.println(result);
     }
 
-    public static int[] separate(String input) {
-        input.replaceAll("\\s",""); // Удаляем все пробелы в строке на всякий случай
-
-        boolean arab;
-
-        if (Character.toString(input.charAt(0)).matches("[IVXM]")) {
-            arab = false; // Первоначальное определение какие цифры используем
-        }
-
-        String firstNum = "";
-        String operand = "";
-        String lastNum = "";
-
-        for (var i = 0; i < input.length(); i++) {
-            if (Character.toString(input.charAt(i)).matches("[\\+\\-\\*\\/]") && operand.equals("")) {
-                operand = Character.toString(input.charAt(i));
-                continue;
-            }
-            if (operand.equals("")) {
-                firstNum += Character.toString(input.charAt(i));
-            }
-
-            if (operand.length() == 1) {
-                lastNum += Character.toString(input.charAt(i));
-            }
-        }
-
-        System.out.println(firstNum+operand+lastNum);
-
-        int num1 = Integer.parseInt(firstNum), num2 = Integer.parseInt(lastNum);
-        int[] numbers = new int[num1];
-        try {
-            num1 = Integer.parseInt(firstNum);
-        }
-        catch (NumberFormatException e) {
-            num1 = 0;
-        }
-
-        return numbers;
-
+    public static String[] separate(String input) {
+        String[] arrayOfInput = input.split(" ");
+        // тут выбрасываем исключение если 1 элемент массива не выполняет условию matches("/+|/-|//|/*")
+        // а так же если массив больше или меньше трёх элементов
+        return arrayOfInput;
     }
+
+    public static boolean checkArab(String operandOne, String operandTwo) { // Какие цифры используем
+        String arab = "^\\d+$";
+        String nonArab = "I|V|X|L|C|D|M";
+        boolean answer = false;
+        if (operandOne.matches(nonArab) && operandTwo.matches(nonArab)) {
+            answer = false;
+        }
+        if (operandOne.matches(arab) && operandTwo.matches(arab)) {
+            answer = true;
+        }
+        if ((operandOne.matches(arab) && operandOne.matches(nonArab)) || (operandTwo.matches(nonArab) && operandTwo.matches(arab))) {
+            answer = false; // тут исключение, что значение операнда не может иметь вид I1V и т.д.
+        }
+        return answer; // тут кидаем исключение если первый операнд не из тех же чисел, что и второй
+    }
+
+    public static int[] decode(String[] operandsString, boolean isArab) {
+        int[] operandsInt = {0, 0};
+        if (isArab){
+            operandsInt[0] = Integer.parseInt(operandsString[0]);
+            operandsInt[1] = Integer.parseInt(operandsString[2]);
+        } else {
+            RomanToArabGenerator RomanToArab = new RomanToArabGenerator();
+            operandsInt[0] = RomanToArab.generate(operandsString[0]);
+            operandsInt[1] = RomanToArab.generate(operandsString[2]);
+        }
+        return operandsInt;
+    }
+
+    public static String encode(int finalNumber, boolean isArab) {
+        if (isArab) {
+            return Integer.toString(finalNumber);
+        }
+        ArabToArabToRoman romanGenerator = new ArabToArabToRoman();
+        return romanGenerator.generate(finalNumber);
+    }
+
     public static String calc(String input) {
-    return "coming soon...";
+
+        String[] separated = separate(input);
+        String operator = separated[1];
+        // тут можно выкинуть исключение если оператор не поддерживается
+        boolean isArab = checkArab(separated[0], separated[2]);
+        int[] numbers = decode(separated, isArab);
+        int result = 0;
+
+        switch (operator) {
+            case ("+") -> result = numbers[0] + numbers[1];
+            case ("-") -> result = numbers[0] - numbers[1];
+            case ("*") -> result = numbers[0] * numbers[1];
+            case ("/") -> result = numbers[0] / numbers[1];
+            default -> {
+            }
+        }
+
+        return encode(result, isArab);
     }
 
 }
+
+
