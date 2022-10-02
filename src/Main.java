@@ -1,33 +1,43 @@
 import ArabToRoman.ArabToArabToRoman;
 import RomanToArab.RomanToArabGenerator;
 
+import java.util.Scanner;
+
 public class Main {
     public static void main(String[] args) {
-        var result = calc("V + MMM");
+        Scanner console = new Scanner(System.in);
+        String input = console.nextLine();
+        var result = calc(input);
         System.out.println(result);
     }
 
     public static String[] separate(String input) {
         String[] arrayOfInput = input.split(" ");
         // тут выбрасываем исключение если 1 элемент массива не выполняет условию matches("/+|/-|//|/*")
-        // а так же если массив больше или меньше трёх элементов
+        // или число аргументов не равно трём
+        if (!arrayOfInput[1].matches("\\+|\\-|\\/|\\*")) throw new IllegalArgumentException("Неизвестный оператор.");
+        if (arrayOfInput.length > 3) throw new IllegalArgumentException("Слишком много аргументов.");
+        if (arrayOfInput.length < 3) throw new IllegalArgumentException("Слишком мало аргументов.");
+
         return arrayOfInput;
     }
 
     public static boolean checkArab(String operandOne, String operandTwo) { // Какие цифры используем
-        String arab = "^\\d+$";
+        String arab = "\\d+";
         String nonArab = "I|V|X|L|C|D|M";
+        int variant = 0;
         boolean answer = false;
         if (operandOne.matches(nonArab) && operandTwo.matches(nonArab)) {
-            answer = false;
+            variant = 1;
+            return false;
         }
         if (operandOne.matches(arab) && operandTwo.matches(arab)) {
-            answer = true;
+            variant = 2;
+            return true;
         }
-        if ((operandOne.matches(arab) && operandOne.matches(nonArab)) || (operandTwo.matches(nonArab) && operandTwo.matches(arab))) {
-            answer = false; // тут исключение, что значение операнда не может иметь вид I1V и т.д.
-        }
-        return answer; // тут кидаем исключение если первый операнд не из тех же чисел, что и второй
+        if (variant == 0) throw new IllegalArgumentException("Первый операнд не из той же системы исчисления, что и второй, значение операнда не может иметь вид I1V и т.д.");
+
+        return answer;
     }
 
     public static int[] decode(String[] operandsString, boolean isArab) {
@@ -55,7 +65,6 @@ public class Main {
 
         String[] separated = separate(input);
         String operator = separated[1];
-        // тут можно выкинуть исключение если оператор не поддерживается
         boolean isArab = checkArab(separated[0], separated[2]);
         int[] numbers = decode(separated, isArab);
         int result = 0;
