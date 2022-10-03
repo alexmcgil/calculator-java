@@ -15,16 +15,16 @@ public class Main {
         String[] arrayOfInput = input.split(" ");
         // тут выбрасываем исключение если 1 элемент массива не выполняет условию matches("/+|/-|//|/*")
         // или число аргументов не равно трём
-        if (!arrayOfInput[1].matches("\\+|\\-|\\/|\\*")) throw new IllegalArgumentException("Неизвестный оператор.");
         if (arrayOfInput.length > 3) throw new IllegalArgumentException("Слишком много аргументов.");
         if (arrayOfInput.length < 3) throw new IllegalArgumentException("Слишком мало аргументов.");
+        if (!arrayOfInput[1].matches("\\+|\\-|\\/|\\*")) throw new IllegalArgumentException("Неизвестный оператор.");
 
         return arrayOfInput;
     }
 
     public static boolean checkArab(String operandOne, String operandTwo) { // Какие цифры используем
         String arab = "\\d+";
-        String nonArab = "I|V|X|L|C|D|M";
+        String nonArab = "(I|V|X|L|C|D|M)+";
         int variant = 0;
         boolean answer = false;
         if (operandOne.matches(nonArab) && operandTwo.matches(nonArab)) {

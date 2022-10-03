@@ -7,8 +7,8 @@ public class ArabToArabToRoman implements ArabToRoman {
     @Override
     public String generate(int number) {
 
-        if(number < 1) throw new IllegalArgumentException("Число должно быть не меньше 1");
-        if(number > 3999) throw new IllegalArgumentException("Число должно быть не больше 3999.");
+        if(number < 1) throw new IllegalArgumentException("Римские числа не могут быть меньше 1.");
+        if(number > 3999) throw new IllegalArgumentException("Римские числа не могут быть больше 3999 в данной реализации калькулятора.");
 
         int arabNumberFound = (int)(dictionary.map.floorKey(number));
 
